@@ -20,35 +20,36 @@
 			var rose = Chart.rose(),
 				height = 600,
 				format = d3.time.format('%m/%Y'),
-				causes = ['DR', 'agency', 'AC'],
+				causes = ['Direct', 'Agency', 'Air Crews'];//,
 				labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 			// Add a title:
-			/*d3.select('body').append('h2')
+			d3.select('body').append('h2')
 				.attr('class', 'title')
-				.html('Diagram <span class="small">of the</span> Causes <span class="small">of</span> Mortality <span class="small">in the</span> Army <span class="small">of the</span> East');
+				.html('Diagram <span class="small">of the</span> Data Analysis <span class="small">of</span> Hotel Customers');
 
 			// Add sub-titles:
 			d3.select('body').append('h3')
 				.attr('class', 'subtitle left')
-				.html('April 1855 - March 1856');
+				.html('Reservation');
 
-			d3.select('body').append('h3')
+			/*d3.select('body').append('h3')
 				.attr('class', 'subtitle right')
 				.html('April 1854 - March 1855');
-			*/	
-			// Load the JSON data:
+				*/
+			// Load the csv data:
 			d3.csv('hotel.csv', type, function(error, data) {
 				// Format the date and rework the data:
 				if (error)throw error;
+				
 				var scalar;
-				data.forEach(function(d) { 
-					d.date = format.parse(d.date);
-					d.label = labels[d.date.getMonth()];
+				data.forEach(function(d, i) { 
+					//d.date = format.parse(i);
+					d.label = d.label;//labels[d.date.getMonth()];
 					
 					// Calculate the average annual mortality, as done by Nightingale:
 					// http://understandinguncertainty.org/node/214 
-					scalar = 1000*12 / d.army_size;
+					scalar = d.occupancy;
 					d.DR = d.DR * scalar;
 					d.agency  = d.agency  * scalar;
 					d.AC   = d.AC   * scalar;
@@ -66,7 +67,7 @@
 				/*var dataset2 = data.slice(12,24),
 					dataset1 = data.slice(0,12);
 				*/
-				var dataset1 = data;
+				var dataset1 = data, dataset2 = data;
 				// Append a new figure to the DOM:
 				figure = d3.select('body')
 					.append('figure');
@@ -81,7 +82,7 @@
 					.delay(0)
 					.duration(500)
 					.domain([0, maxRadius])
-					.angle(function(d) { return d.date.getMonth(); })
+					.angle(function(d, i) { return i; })
 					.area(function(d, i) { return [d.DR, d.agency, d.AC]; });							
 
 				// Bind the data and generate a new chart:
@@ -103,15 +104,15 @@
 				// Bind the second dataset and generate a new chart:
 				/*figure.datum(dataset2)
 					.attr('class', 'chart figure2')
-					.call(rose);	*/
-
+					.call(rose);	
+*/
 				// Append a caption:
 				/*d3.select('.figure2').append('figcaption')
 					.attr('class', 'caption')
-					.html('The Areas of the blue, red, &amp; black wedges are each measured from the centre as the common vertex <p> The blue wedges measured from the centre of the circle represent area for area the deaths from Preventible or Mitigable Zymotic Diseases, the red wedges measured from the center the deaths from wounds, &amp; the black wedges measured from the center the deaths from all other causes </p><p> In October 1844, &amp; April 1855, the black area coincides with the red, in January &amp; February 1856, the blue coincides with the black </p><p> The entire areas may be compared by following the blue, the red &amp; the black lines enclosing them.</p>');*/
-
+					.html('The Areas of the blue, red, &amp; black wedges are each measured from the centre as the common vertex <p> The blue wedges measured from the centre of the circle represent area for area the deaths from Preventible or Mitigable Zymotic Diseases, the red wedges measured from the center the deaths from wounds, &amp; the black wedges measured from the center the deaths from all other causes </p><p> In October 1844, &amp; April 1855, the black area coincides with the red, in January &amp; February 1856, the blue coincides with the black </p><p> The entire areas may be compared by following the blue, the red &amp; the black lines enclosing them.</p>');
+*/
 				// Create a legend:
-				/*Chart.legend(causes);*/
+				Chart.legend(causes);
 
 				// Create a slider:
 				Chart.slider(0, data.length, 1); // minVal, maxVal, step
@@ -133,8 +134,8 @@
       			d.agency = +d.agency;
       			d.AC = +d.AC
       			d.u20 = +d.u20;
-				d.20to35 = +d.20to35;
-				d.35to55 = +d.35to55;
+				d.f20to35 = +d.f20to35;
+				d.f35to55 = +d.f35to55;
 				d.m55 = +d.m55;
 				d.price = +d.price;
 				d.LoS = +d.LoS;
