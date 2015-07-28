@@ -1,2 +1,2 @@
-<h1>PKU's vis practice</h1>
-<h2>hotel</h2>
+<h1>PKU's Data Visualization Practice</h1>
+<h2>Hotel</h2>
