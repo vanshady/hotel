@@ -17,7 +17,7 @@ body {
 figure {
 	position: relative;
     float: right;
-	width: 100%;
+	width: 50%;
 	min-width: 400px;
 	margin-top: -20px;
 }
@@ -73,7 +73,7 @@ h1 {
 	position: relative;
 	top: -170px;
 	width: 320px;
-	display: block;
+	float: right;
 	margin: 0 auto;
 	font-style: oblique;
 	font-size: 12px;
@@ -117,20 +117,21 @@ h1 {
 	width: 400px;
 	height: 50px;
 	padding: 0 20px;
-	display: block;
+	float: right;
 	position: relative;
 	margin: 0 auto;
-	top: -30px;
+	left: 550px;
+	top: 70px;
 	text-align: center;
 }
 
 .slider {
 	width: 400px;
-	display: block;
+	float: right;
 	position: relative;
 	margin: 0 auto;
-	left: -10px; /* hacky */
-	top: 10px;
+	left: 520px; /* hacky */
+	top: 90px;
 }
 
 /*stacked area chart
@@ -158,4 +159,18 @@ path {
     stroke: grey;
     stroke-width: 1;
     shape-rendering: crispEdges;
+}
+
+circle {
+	stroke-width : 1.2px;
+	fill: black;
+}
+/*bar*/
+.bar {
+  fill: steelblue;
+  fill-opacity: 80%;
+}
+
+svg {
+	float:left;
 }

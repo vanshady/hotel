@@ -18,7 +18,7 @@
 		-->
 		<script type="text/javascript">
 			var rose = Chart.rose(),
-				height = 600,
+				roseHeight = 600,
 				format = d3.time.format('%B'),
 				causes = ['Direct', 'Agency', 'Air Crews'];//,
 				labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -30,7 +30,7 @@
 
 			// Add sub-titles:
 			d3.select('body').append('h3')
-				.attr('class', 'subtitle left')
+				.attr('class', 'subtitle right')
 				.html('Reservation');
 
 			/*d3.select('body').append('h3')
@@ -38,38 +38,45 @@
 				.html('April 1854 - March 1855');
 				*/
 			// Set the dimensions of the canvas / graph
-var margin = {top: 30, right: 20, bottom: 70, left: 50},
-    width = 600 - margin.left - margin.right,
-    height = 270 - margin.top - margin.bottom;
+			var margin = {top: 30, right: 20, bottom: 100, left: 150},
+    			width = 600 - margin.left - margin.right,
+    			height = 250 - margin.top - margin.bottom;
 
-// Parse the date / time
-var parseDate = d3.time.format("%B").parse;
+			// Parse the date / time
+			var parseDate = d3.time.format("%B").parse;
 
-// Set the ranges
-var x = d3.time.scale().range([0, width]);
-var y = d3.scale.linear().range([height, 0]);
+			// Set the ranges
+			var x = d3.time.scale().range([0, width]);
+			var y0 = d3.scale.linear().range([height, 0]);
+			var y1 = d3.scale.linear().range([height, 0]);
+			
+			// Define the axes
+			var xAxis = d3.svg.axis().scale(x)
+    			.orient("bottom").ticks(12)
+    			.tickFormat(d3.time.format("%B")); // tickFormat
 
-// Define the axes
-var xAxis = d3.svg.axis().scale(x)
-    .orient("bottom").ticks(10)
-    .tickFormat(d3.time.format("%B")); // tickFormat
+			var yAxisLeft = d3.svg.axis().scale(y0)
+    			.orient("left").ticks(10);
+			var yAxisRight = d3.svg.axis().scale(y1)
+    			.orient("left").ticks(5);	
 
-var yAxis = d3.svg.axis().scale(y)
-    .orient("left").ticks(5);
-
-// Define the line
-var valueline = d3.svg.line()
-    .x(function(d) { return x(parseDate(d.label)); })
-    .y(function(d) { return y(d.price); });
-    
-// Adds the svg canvas
-var svg = d3.select("body")
-    .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-        .attr("transform", 
-              "translate(" + margin.left + "," + margin.top + ")");
+			// Define the line
+			var valueline0 = d3.svg.line()
+    			.x(function(d) { return x(parseDate(d.label))+15; })
+    			.y(function(d) { return y0(d.price); });
+    		
+			var valueline1 = d3.svg.line()
+    			.x(function(d) { return x(parseDate(d.label)); })
+    			.y(function(d) { return y1(d.occupancy); });
+				
+			// Adds the svg canvas
+			var svg = d3.select("body")
+    			.append("svg")
+        			.attr("width", width + margin.left + margin.right)
+        			.attr("height", height + margin.top + margin.bottom)
+    			.append("g")
+        			.attr("transform", 
+              			"translate(" + margin.left + "," + margin.top + ")");
 
 			// Load the csv data:
 			d3.csv('hotel.csv', type, function(error, data) {
@@ -112,7 +119,7 @@ var svg = d3.select("body")
 				// Update the chart generator settings:
 				rose.legend(causes)
 					.width(width)
-					.height(height)
+					.height(roseHeight/2+40)
 					.delay(0)
 					.duration(500)
 					.domain([0, maxRadius])
@@ -121,7 +128,7 @@ var svg = d3.select("body")
 
 				// Bind the data and generate a new chart:
 				figure.datum(dataset1)
-					.attr('class', 'chart figure1')
+					.attr('class', 'chart figure2')
 					.call(rose);	
 
 				// Append a new figure to the DOM:
@@ -152,33 +159,68 @@ var svg = d3.select("body")
 				Chart.slider(0, data.length, 1); // minVal, maxVal, step
 				
 				// Scale the range of the data
-    x.domain(d3.extent(data, function(d) { return parseDate(d.label); }));
-    y.domain([0, d3.max(data, function(d) { return d.price; })]);
+   				x.domain(d3.extent(data, function(d) { return parseDate(d.label); }));
+    			y0.domain([0, d3.max(data, function(d) { return Math.max(d.price); })]);
+				y1.domain([0, d3.max(data, function(d) { return Math.max(d.occupancy); })]);
+    			// Add the valueline path.
+	
+    			svg.append("path")
+        			.attr("class", "line")
+        			.attr("d", valueline0(data));
 
-    // Add the valueline path.
-    svg.append("path")
-        .attr("class", "line")
-        .attr("d", valueline(data));
-
-    // Add the X Axis
-    svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(xAxis)
-        .selectAll("text")	
-            .style("text-anchor", "end")
-            .attr("dx", "-.8em")
-            .attr("dy", ".15em")
-            .attr("transform", function(d) {
-                return "rotate(-65)" 
-                });
-
-    // Add the Y Axis
-    svg.append("g")
-        .attr("class", "y axis")
-        .call(yAxis);
-			});	
-			
+    			// Add the X Axis
+    			svg.append("g")
+        			.attr("class", "x axis")
+        			.attr("transform", "translate(10," + height + ")")
+        			.call(xAxis)
+        			.selectAll("text")	
+            			.style("text-anchor", "end")
+            			.attr("dx", "-.8em")
+            			.attr("dy", ".15em")
+            			.attr("transform", function(d) {
+                			return "rotate(-65)" 
+                			});
+				svg.append("g")
+					.attr("class", "x axis")	
+					.attr("transform","translate(0,"+height+")")
+					.append("path")
+        			.attr("class", "line")
+					.style("stroke", "black")
+        			.attr("d", "M 0 "+height+" L 10 "+height+" Z");
+							
+    			// Add the Y Axis
+    			svg.append("g")
+        			.attr("class", "y axis")
+        			.call(yAxisLeft);
+					
+				svg.append("g")
+					.attr("class", "y axis")
+					.attr("transform", "translate(" + width+50 + " ,0)")
+					.style("fill", "red")
+					.call(yAxisRight);
+					
+				// Add the dots
+				svg.selectAll("dot").data(data).enter().append("circle")
+					.style("stroke", function(d) { 
+						if (d.conventions == 1) {return "red"} 
+						else { return "black" } 
+						;})
+					.attr("r", function(d){return 5})
+					.attr("cx", function(d) { return x(parseDate(d.label))+10; })
+					.attr("cy", function(d) { return y0(d.price); });
+					
+				//Add the Bar Chart	
+				svg.selectAll(".bar")
+      				.data(data)
+    				.enter().append("rect")
+      				.attr("class", "bar")
+      				.attr("x", function(d) { return x(parseDate(d.label)); })
+      				.attr("width", function(d) { return 20; })
+      				.attr("y", function(d) { return y1(d.occupancy); })
+      				.attr("height", function(d) { return height - y1(d.occupancy); });
+			});//end of csv function
+	
+		
 			function type(d) {
       			d.female = +d.female;
       			d.local = +d.local;
