@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <style>
-
+  
 body {
-  font: 10px sans-serif;
+  font-family:  sans-serif;
+	font-size: 10px;
+	color: #474747;
 }
 
 .axis path,
@@ -15,22 +17,29 @@ body {
 
 .age text {
   text-anchor: end;
-  font: 12px Arial;
 }
+
+.title {
+	font-family: sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+}
+
 
 </style>
 <body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
 <script>
 
-var margin = {top: 20, right: 40, bottom: 30, left: 50},
-    width = 700 - margin.left - margin.right,
-    height = 300 - margin.top - margin.bottom;
+var margin = {top: 20, right: 100, bottom: 100, left: 40},
+    width = 650 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
 
 var parseDate = d3.time.format("%B").parse,
     formatPercent = d3.format(".0%");
     
 var labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+var colors = ['#1f77b4','#aec7e8','#ff7f0e','#ffbb78'];
 var agelabels = ['Under 20', 'From 20 to 35', 'From 35 to 55', 'More than 55']
 var x = d3.time.scale().range([0,width]);
 
@@ -43,7 +52,7 @@ var xAxis = d3.svg.axis()
     .scale(x)
     .orient("bottom")
     .ticks(12)
-    .tickFormat(d3.time.format("%B"));
+    .tickFormat(d3.time.format("%b"));
 
 var yAxis = d3.svg.axis()
     .scale(y)
@@ -68,7 +77,6 @@ d3.csv("/csv/age.csv", function(error, data) {
   if (error) throw error;
 
   color.domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; }));
-  
   
   data.forEach(function(d, i) {
     d.date = parseDate(d.date);
@@ -97,7 +105,8 @@ d3.csv("/csv/age.csv", function(error, data) {
   age.append("path")
       .attr("class", "area")
       .attr("d", function(d) { return area(d.values); })
-      .style("fill", function(d) { return color(d.name); });
+      .style("fill", function(d, i) { return colors[3-i]; })
+      .style("fill-opacity", .7);
 
   svg.append("g")
       .attr("class", "x axis")
@@ -113,10 +122,61 @@ d3.csv("/csv/age.csv", function(error, data) {
       .attr("transform", function(d) { return "translate(" + x(d.value.date) + "," + y(d.value.y0 + d.value.y / 2) + ")"; })
       .attr("x", -6)
       .attr("dy", ".35em")
-      .style("font", "12px")
       .text(function(d, i) { return agelabels[i]; });
-      
+   
+   age.append('circle')
+    .style('fill', '#ffbb78')
+		.attr('r', 5)
+		.attr('cx', (width / 2 - 90))
+		.attr('cy', (height + 90));
+     
+   age.append("text")
+    .attr("class","title")
+    .text('Under 20: 2.42%')
+    .style("text-anchor", "middle")
+    .attr("x",(width / 2))
+    .attr("y",(height + 95));
+  
+  age.append('circle')
+    .style('fill', '#ff7f0e')
+		.attr('r', 5)
+		.attr('cx', (width / 2 - 90))
+		.attr('cy', (height + 70));
+    
+  age.append("text")
+    .attr("class","title")
+    .text('From 20 to 35: 28.08%')
+    .style("text-anchor", "middle")
+    .attr("x",(width / 2))
+    .attr("y",(height +75));
+  
+  age.append('circle')
+    .style('fill', '#aec7e8')
+		.attr('r', 5)
+		.attr('cx', (width / 2 - 90))
+		.attr('cy', (height+50));
+    
+  age.append("text") 
+      .attr("class","title")
+      .attr("x", (width / 2) )
+      .attr("y", (height + 55) )
+      .style("text-anchor", "middle")
+      .text('From 35 to 55: 49.92%');
+  
+  age.append('circle')
+    .style('fill', '#1f77b4')
+		.attr('r', 5)
+		.attr('cx', (width / 2 - 90))
+		.attr('cy', (height + 30));
+  
+  age.append("text") 
+      .attr("class","title")
+      .attr("x", (width / 2) )
+      .attr("y", (height+ 35) )
+      .style("text-anchor", "middle")
+      .text('More than 55: 19.58%');
+
 });
 
-
 </script>
+</body>

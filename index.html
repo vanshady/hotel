@@ -10,21 +10,24 @@
 	</head>
 	<body>
 		<button><a href='age.html'>age</a></button>
+		<button><a href='region.html'>region</a></button>
 		<script type="text/javascript">
 		// Add a title:
 			d3.select("body").append('h2')
 				.attr('class', 'title')
 				.html('Diagram <span class="small">of the</span> Data Analysis <span class="small">of</span> Hotel Customers');
 		</script>
-		<div float=left>
+		<div>
+		<div  class="div1" style="display: inline-block">
 			<iframe src="bar.html" frameBorder=0 marginwidth=0 marginheight=0 
-			scrolling=no style="width:800px;height:300px;" width=800  height=50 ALLOWTRANSPARENCY="true">
+			scrolling=no style="width:800px;" width=800  height=300 ALLOWTRANSPARENCY="true">
 			</iframe>
 		</div>
-		<div floar=right>
+		<div  class="div2" style="display: inline-block">
 			<iframe src="region.html" frameBorder=0 marginwidth=0 marginheight=0 
-			scrolling=no style="width:600px;height:300px;" width=800  height=50 ALLOWTRANSPARENCY="true">
+			scrolling=no style="width:600px;height:800px;" width=800  height=800 ALLOWTRANSPARENCY="true">
 			</iframe>
+		</div>
 		</div>
 	</body>
 </html>

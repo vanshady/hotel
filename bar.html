@@ -12,8 +12,8 @@
 		<script type="text/javascript">
 
 			// Set the dimensions of the canvas / graph
-			var margin = {top: 30, right: 20, bottom: 100, left: 150},
-    			width = 600 - margin.left - margin.right,
+			var margin = {top: 30, right: 30, bottom: 100, left: 80},
+    			width = 500 - margin.left - margin.right,
     			height = 300 - margin.top - margin.bottom;
 			
 			// Parse the date / time
@@ -33,7 +33,7 @@
     			.orient("left").ticks(5);
 				
 			var yAxisRight = d3.svg.axis().scale(y1)
-    			.orient("right").ticks(5);	
+    			.orient("right").ticks(5).tickFormat(d3.format(".0%"));
 
 			// Define the line
 			var valueline0 = d3.svg.line()
@@ -56,8 +56,8 @@
 								
 				// Scale the range of the data
    				x.domain(d3.extent(data, function(d) { return parseDate(d.label); }));
-    			y0.domain([0, 200]);
-				y1.domain([0, 100]);
+    			y0.domain([120, 200]);
+				y1.domain([0, 1]);
 
     			// Add the X Axis
     			svg.append("g")
@@ -95,12 +95,11 @@
 					.call(yAxisRight);
 				
 				svg.append("text")
-					.attr("transform", "translate(" + ( 600) + " ," +(-100) +")")
-					.attr("transform", "rotate(90)")
-					.attr("dy", "-34.5em")
-					.attr("dx", "8.5em")
-					//.style("text-anchor", "middle")
-					.style("text-anchor", "end")
+					.attr("y", width+40)
+					.attr("x",0 - (height / 2))
+					.attr("transform", "rotate(-90)")
+					.attr("dy", "1em")
+					.style("text-anchor", "middle")
 					.style("font-weight", "bold")
 					.style("fill","steelblue")
 					.text("Occupancy");
@@ -149,7 +148,7 @@
 				svg.append("text")
 					.attr("transform", "translate(" + (width/2 - 45) + " ," +(height+85) +")")
 					.style("text-anchor", "start")
-					.text(" : Convention");
+					.text(" : Has Convention");
 					
 			});//end of csv function
 	
@@ -173,7 +172,7 @@
 				d.m55 = +d.m55;
 				d.price = +d.price;
 				d.LoS = +d.LoS;
-				d.occupancy = +d.occupancy;
+				d.occupancy = d.occupancy / 100;
 				d.conventions = +d.conventions;
       			return d;
     		}

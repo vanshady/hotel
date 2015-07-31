@@ -1,0 +1,13 @@
+body {
+	font-family: 'Cabin', sans-serif;
+	font-size: 10px;
+	font-weight: normal;
+	color: #474747;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
