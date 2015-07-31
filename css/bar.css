@@ -1,0 +1,31 @@
+body {
+	font-family: 'Cabin', sans-serif;
+	font-size: 14px;
+	font-weight: normal;
+	color: #474747;
+}
+
+
+path { 
+    stroke: black;
+    stroke-width: 2;
+    fill: none;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+circle {
+	stroke-width : 1.2px;
+	fill: black;
+}
+
+.bar {
+  fill: steelblue;
+  fill-opacity: 80%;
+}
