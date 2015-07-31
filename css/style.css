@@ -1,0 +1,55 @@
+body {
+	font-family: 'Cabin', sans-serif;
+	font-size: 14px;
+	font-weight: normal;
+	color: #474747;
+	width: 100%;
+	min-height: 100%;
+}
+
+.title, .subtitle, .caption, .label, .legend, figure {
+	font-family: baskerville, serif;
+}
+
+.title, .subtitle, .label, .legend {
+	text-transform: uppercase;
+}
+
+.title {
+	font-size: 20px;
+	width: 400px;
+	text-align: center;
+	display: block;
+	margin: 0 auto;
+	margin-top: 50px;
+}
+
+	.title .small {
+		font-size: 12px;
+	}
+	
+/*line chart*/
+path { 
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+circle {
+	stroke-width : 1.2px;
+	fill: black;
+}
+
+/*bar*/
+.bar {
+  fill: steelblue;
+  fill-opacity: 80%;
+}

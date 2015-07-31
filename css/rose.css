@@ -1,3 +1,4 @@
+
 /* Apply a natural box layout model to all elements */
 * { 
 	-moz-box-sizing: border-box;
@@ -94,7 +95,7 @@ h1 {
 .wedge {
 	stroke: #aaa;
 	stroke-width: 1px;
-	/*shape-rendering: crispEdges;*/
+	shape-rendering: crispEdges;
 }
 
 .label {
@@ -132,45 +133,4 @@ h1 {
 	margin: 0 auto;
 	left: 520px; /* hacky */
 	top: 90px;
-}
-
-/*stacked area chart
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-
-.browser text {
-  text-anchor: end;
-}
-*/
-/*line chart*/
-path { 
-    stroke: steelblue;
-    stroke-width: 2;
-    fill: none;
-}
-
-.axis path,
-.axis line {
-    fill: none;
-    stroke: grey;
-    stroke-width: 1;
-    shape-rendering: crispEdges;
-}
-
-circle {
-	stroke-width : 1.2px;
-	fill: black;
-}
-/*bar*/
-.bar {
-  fill: steelblue;
-  fill-opacity: 80%;
-}
-
-svg {
-	float:left;
 }

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Index</title>
+		<!-- Stylesheets -->
+		<link rel="stylesheet" type="text/css" href="/css/style.css">
+		<!-- Libraries -->
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+	</head>
+	<body>
+		<script type="text/javascript">
+
+			// Set the dimensions of the canvas / graph
+			var margin = {top: 30, right: 20, bottom: 100, left: 150},
+    			width = 600 - margin.left - margin.right,
+    			height = 250 - margin.top - margin.bottom;
+			
+			// Parse the date / time
+			var parseDate = d3.time.format("%B").parse;
+
+			// Set the ranges
+			var x = d3.time.scale().range([0, width]);
+			var y0 = d3.scale.linear().range([height, 0]);
+			var y1 = d3.scale.linear().range([height, 0]);
+			
+			// Define the axes
+			var xAxis = d3.svg.axis().scale(x)
+    			.orient("bottom").ticks(12)
+    			.tickFormat(d3.time.format("%B")); // tickFormat
+
+			var yAxisLeft = d3.svg.axis().scale(y0)
+    			.orient("left").ticks(10);
+			var yAxisRight = d3.svg.axis().scale(y1)
+    			.orient("left").ticks(5);	
+
+			// Define the line
+			var valueline0 = d3.svg.line()
+    			.x(function(d) { return x(parseDate(d.label))+15; })
+    			.y(function(d) { return y0(d.price); });
+				
+			// Adds the svg canvas
+			var svg = d3.select("body")
+    			.append("svg")
+        			.attr("width", width + margin.left + margin.right)
+        			.attr("height", height + margin.top + margin.bottom)
+    			.append("g")
+        			.attr("transform", 
+              			"translate(" + margin.left + "," + margin.top + ")");
+								
+			// Load the csv data:
+			d3.csv('/csv/hotel.csv', type, function(error, data) {
+				// Format the date and rework the data:
+				if (error)throw error;
+								
+				// Scale the range of the data
+   				x.domain(d3.extent(data, function(d) { return parseDate(d.label); }));
+    			y0.domain([0, d3.max(data, function(d) { return Math.max(d.price); })]);
+				y1.domain([0, d3.max(data, function(d) { return Math.max(d.occupancy); })]);
+    			
+				// Add the valueline path.
+    			svg.append("path")
+        			.attr("class", "line")
+        			.attr("d", valueline0(data));
+
+    			// Add the X Axis
+    			svg.append("g")
+        			.attr("class", "x axis")
+        			.attr("transform", "translate(10," + height + ")")
+        			.call(xAxis)
+        			.selectAll("text")	
+            			.style("text-anchor", "end")
+            			.attr("dx", "-.4em")
+            			.attr("dy", ".60em")
+            			.attr("transform", function(d) {
+                			return "rotate(-45)" 
+                			});
+							
+    			// Add the Y Axis
+    			svg.append("g")
+        			.attr("class", "y axis")
+        			.call(yAxisLeft);
+					
+				svg.append("g")
+					.attr("class", "y axis")
+					.attr("transform", "translate(" + width + " ,0)")
+					.style("fill","steelblue")
+					.call(yAxisRight);
+					
+				// Add the dots
+				svg.selectAll("dot").data(data).enter().append("circle")
+					.style("stroke", function(d) { 
+						if (d.conventions == 1) {return "red"} 
+						else { return "black" } 
+						;})
+					.attr("r", function(d){return 5})
+					.attr("cx", function(d) { return x(parseDate(d.label))+10; })
+					.attr("cy", function(d) { return y0(d.price); });
+					
+				//Add the Bar Chart	
+				svg.selectAll(".bar")
+      				.data(data)
+    				.enter().append("rect")
+      				.attr("class", "bar")
+      				.attr("x", function(d) { return x(parseDate(d.label)); })
+      				.attr("width", function(d) { return 20; })
+      				.attr("y", function(d) { return y1(d.occupancy); })
+      				.attr("height", function(d) { return height - y1(d.occupancy); });
+			
+				svg.append("g")
+					.attr("class", "x axis")	
+					.attr("transform","translate(0,"+height+")")
+					.append("path")
+        			.attr("class", "line")
+					.style("stroke", "black")
+        			.attr("d", "M 0 "+height+" L 10 "+height+" Z");
+			});//end of csv function
+	
+			function type(d) {
+      			d.female = +d.female;
+      			d.local = +d.local;
+      			d.USA = +d.USA;
+      			d.SA = +d.SA;
+      			d.EU = +d.EU;
+      			d.EU = +d.EU;
+      			d.MEA = +d.MEA;
+      			d.ASIA = +d.ASIA;
+      			d.businessmen = +d.businessmen;
+				d.tourists = +d.tourists;
+      			d.DR = +d.DR;
+      			d.agency = +d.agency;
+      			d.AC = +d.AC
+      			d.u20 = +d.u20;
+				d.f20to35 = +d.f20to35;
+				d.f35to55 = +d.f35to55;
+				d.m55 = +d.m55;
+				d.price = +d.price;
+				d.LoS = +d.LoS;
+				d.occupancy = +d.occupancy;
+				d.conventions = +d.conventions;
+      			return d;
+    		}
+			
+		</script>
+	</body>
+</html>
