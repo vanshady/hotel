@@ -39,7 +39,9 @@ var parseDate = d3.time.format("%B").parse,
     formatPercent = d3.format(".0%");
     
 var labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-var colors = ['#1f77b4','#aec7e8','#ff7f0e','#ffbb78'];
+var colors0 = ['#1f77b4','#aec7e8','#ffbb78','#ff7f0e'];
+
+var colors = ['#3182bd','#9ecae1',' #9467bd','#FF0000'];
 var agelabels = ['Under 20', 'From 20 to 35', 'From 35 to 55', 'More than 55']
 var x = d3.time.scale().range([0,width]);
 
@@ -106,7 +108,7 @@ d3.csv("/csv/age.csv", function(error, data) {
       .attr("class", "area")
       .attr("d", function(d) { return area(d.values); })
       .style("fill", function(d, i) { return colors[3-i]; })
-      .style("fill-opacity", .7);
+      .style("fill-opacity", .9);
 
   svg.append("g")
       .attr("class", "x axis")
@@ -125,7 +127,7 @@ d3.csv("/csv/age.csv", function(error, data) {
       .text(function(d, i) { return agelabels[i]; });
    
    age.append('circle')
-    .style('fill', '#ffbb78')
+    .style('fill', colors[3])
 		.attr('r', 5)
 		.attr('cx', (width / 2 - 90))
 		.attr('cy', (height + 90));
@@ -138,7 +140,7 @@ d3.csv("/csv/age.csv", function(error, data) {
     .attr("y",(height + 95));
   
   age.append('circle')
-    .style('fill', '#ff7f0e')
+    .style('fill', colors[2])
 		.attr('r', 5)
 		.attr('cx', (width / 2 - 90))
 		.attr('cy', (height + 70));
@@ -151,7 +153,7 @@ d3.csv("/csv/age.csv", function(error, data) {
     .attr("y",(height +75));
   
   age.append('circle')
-    .style('fill', '#aec7e8')
+    .style('fill', colors[1])
 		.attr('r', 5)
 		.attr('cx', (width / 2 - 90))
 		.attr('cy', (height+50));
@@ -164,7 +166,7 @@ d3.csv("/csv/age.csv", function(error, data) {
       .text('From 35 to 55: 49.92%');
   
   age.append('circle')
-    .style('fill', '#1f77b4')
+    .style('fill', colors[0])
 		.attr('r', 5)
 		.attr('cx', (width / 2 - 90))
 		.attr('cy', (height + 30));

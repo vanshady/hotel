@@ -3,7 +3,7 @@
 <style>
 
 body {
-  font: 10px sans-serif;
+  font: 18px sans-serif;
 }
 
 .axis path,
@@ -31,23 +31,24 @@ body {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 <script>
 
-var margin = {top: 20, right: 100, bottom: 30, left: 40},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+var margin = {top: 20, right: 100, bottom: 100, left: 60},
+    width = 600 - margin.left - margin.right,
+    height = 300 - margin.top - margin.bottom;
 
-var x = d3.time.scale().range([0,width]);
+var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1);
 
 var y = d3.scale.linear()
     .range([height, 0]);
     
 var color = d3.scale.ordinal()
-    .range(["#98abc5", "#ff8c00"]);
+    .range(["#1f77b4", "lightpink"]);
 
 var xAxis = d3.svg.axis()
     .scale(x)
     .orient("bottom")
-    .ticks(12)
-    .tickFormat(d3.time.format("%b"));
+    //.ticks(12)
+    //.tickFormat(d3.time.format("%b"));
 
 var yAxis = d3.svg.axis()
     .scale(y)
@@ -60,21 +61,19 @@ var svg = d3.select("body").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.csv("data.csv", function(error, data) {
+d3.csv("/csv/gender.csv", function(error, data) {
   if (error) throw error;
 
-  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "State"; }));
+  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; }));
 
   data.forEach(function(d) {
     var y0 = 0;
-    d.ages = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
-    d.ages.forEach(function(d) { d.y0 /= y0; d.y1 /= y0; });
+    d.genders = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
+    d.genders.forEach(function(d) { d.y0 /= y0; d.y1 /= y0; });
   });
 
-  data.sort(function(a, b) { return b.ages[0].y1 - a.ages[0].y1; });
-
-  x.domain(data.map(function(d) { return d.State; }));
-
+  x.domain(data.map(function(d) { return d.date; }));
+  
   svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
@@ -84,25 +83,26 @@ d3.csv("data.csv", function(error, data) {
       .attr("class", "y axis")
       .call(yAxis);
 
-  var state = svg.selectAll(".state")
+  var gender = svg.selectAll(".gender")
       .data(data)
     .enter().append("g")
-      .attr("class", "state")
-      .attr("transform", function(d) { return "translate(" + x(d.State) + ",0)"; });
+      .attr("class", "gender")
+      .attr("transform", function(d) { return "translate(" + x(d.date) + ",0)"; });
 
-  state.selectAll("rect")
-      .data(function(d) { return d.ages; })
+  gender.selectAll("rect")
+      .data(function(d) { return d.genders; })
     .enter().append("rect")
       .attr("width", x.rangeBand())
       .attr("y", function(d) { return y(d.y1); })
       .attr("height", function(d) { return y(d.y0) - y(d.y1); })
-      .style("fill", function(d) { return color(d.name); });
+      .style("fill", function(d) { return color(d.name); })
+      .style("fill-opacity",0.7);
 
-  var legend = svg.select(".state:last-child").selectAll(".legend")
-      .data(function(d) { return d.ages; })
+  var legend = svg.select(".gender:last-child").selectAll(".legend")
+      .data(function(d) { return d.genders; })
     .enter().append("g")
       .attr("class", "legend")
-      .attr("transform", function(d) { return "translate(" + x.rangeBand() / 2 + "," + y((d.y0 + d.y1) / 2) + ")"; });
+      .attr("transform", function(d) { return "translate(" + (x.rangeBand()/2+10) + "," + (y((d.y0 + d.y1) / 2)) + ")"; });
 
   legend.append("line")
       .attr("x2", 10);
@@ -111,6 +111,32 @@ d3.csv("data.csv", function(error, data) {
       .attr("x", 13)
       .attr("dy", ".35em")
       .text(function(d) { return d.name; });
+      
+  svg.append('circle')
+    .style('fill', '#1f77b4')
+		.attr('r', 5)
+		.attr('cx', (width / 2 -90 ))
+		.attr('cy', (height + 70));
+     
+  svg.append("text")
+    .attr("class","title")
+    .text('male: 75.33%')
+    .style("text-anchor", "middle")
+    .attr("x",(width / 2))
+    .attr("y",(height + 75));
+  
+  svg.append('circle')
+    .style('fill', 'lightpink')
+		.attr('r', 5)
+		.attr('cx', (width / 2-90))
+		.attr('cy', (height + 50));
+    
+  svg.append("text")
+    .attr("class","title")
+    .text('female: 24.67%')
+    .style("text-anchor", "middle")
+    .attr("x",(width / 2))
+    .attr("y",(height +55));
 
 });
 
