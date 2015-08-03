@@ -7,38 +7,36 @@
 		<link rel="stylesheet" type="text/css" href="/css/style.css">
 		<!-- Libraries -->
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+		<script type="text/javascript">			
+			function setURL(loc) {
+    			document.getElementById('id2').src = loc;
+  			}
+		
+		</script>
 	</head>
-	<body>
-		<button><a href='age.html'>age</a></button>
-		<button><a href='region.html'>region</a></button>
+	<body>		
 		<script type="text/javascript">
-		// Add a title:
+			// Add a title:
 			d3.select("body").append('h2')
 				.attr('class', 'title')
 				.html('Diagram <span class="small">of the</span> Data Analysis <span class="small">of</span> Hotel Customers');
 		</script>
 		<div>
-		<div  class="div1" style="display: inline-block">
+		<div  class="div1" id="id1" style="display: inline-block">
 			<iframe src="bar.html" frameBorder=0 marginwidth=0 marginheight=0 
 			scrolling=no style="width:800px;height:400px;" width=800  height=400 ALLOWTRANSPARENCY="true">
 			</iframe>
 		</div>
-		<div  class="div2" style="display: inline-block">
-			<iframe src="region.html" frameBorder=0 marginwidth=0 marginheight=0 
+		<div  class="div2"  style="display: inline-block">
+			<iframe id="id2" src="region.html" frameBorder=0 marginwidth=0 marginheight=0 
 			scrolling=no style="width:600px;height:400px;" width=800  height=400 ALLOWTRANSPARENCY="true">
 			</iframe>
+			
 		</div>
 		</div>
-		<div>
-			<div  class="div1" style="display: inline-block">
-			<iframe src="gender.html" frameBorder=0 marginwidth=0 marginheight=0 
-			scrolling=no style="width:600px;" width=800  height=300 ALLOWTRANSPARENCY="true">
-			</iframe>
-		</div>
-		<div  class="div2" style="display: inline-block">
-			<iframe src="age.html" frameBorder=0 marginwidth=0 marginheight=0 
-			scrolling=no style="width:600px;height:800px;" width=800  height=800 ALLOWTRANSPARENCY="true">
-			</iframe>
-		</div>
+			<input class="b_r" type="button" onclick="setURL('age.html')" value='age'/>
+			<input class="b_r" type="button" onclick="setURL('region.html')" value='region'/>
+			<input class="b_r" type="button" onclick="setURL('gender.html')" value='gender'/>
+			<input class="b_r" type="button" onclick="setURL('reservation.html')" value='tourist'/>
 	</body>
 </html>
