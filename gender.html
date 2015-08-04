@@ -1,5 +1,7 @@
 <!DOCTYPE html>
+<head>
 <meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="tooltip.css">
 <style>
 
 body {
@@ -27,6 +29,7 @@ body {
 }
 
 </style>
+</head>
 <body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 <script>
@@ -86,7 +89,7 @@ d3.csv("/csv/gender.csv", function(error, data) {
   var gender = svg.selectAll(".gender")
       .data(data)
     .enter().append("g")
-      .attr("class", "gender")
+      .attr("class", "gender btn btn3 btn-warning  btn-large tool-tip slideIn top ")
       .attr("transform", function(d) { return "translate(" + x(d.date) + ",0)"; });
 
   gender.selectAll("rect")
@@ -141,3 +144,4 @@ d3.csv("/csv/gender.csv", function(error, data) {
 });
 
 </script>
+</div></a>

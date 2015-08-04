@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="/css/style.css">
 <style>
-  
+
 body {
   font-family:  sans-serif;
 	font-size: 10px;
@@ -19,18 +20,14 @@ body {
   text-anchor: end;
 }
 
-.title {
-	font-family: sans-serif;
-  font-size: 14px;
-  font-weight: 400;
-}
-
-
 </style>
 <body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
 <script>
-
+// Add a title:
+		d3.select("body").append('h2')
+				.attr('class', 'title')
+				.html('Age');
 var margin = {top: 20, right: 100, bottom: 100, left: 40},
     width = 650 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;

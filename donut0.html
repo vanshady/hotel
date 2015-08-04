@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+
+svg {
+  padding: 10px 0 0 10px;
+}
+
+.arc {
+  stroke: #fff;
+}
+
+</style>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+<script src="donut.js"></script>
+<script>
+	d3.csv("/csv/hotelavg.csv", function(error, data) {
+  		if (error) throw error;
+		
+		data.forEach(function(d) {
+    		d.ages = data.map(function(name) {
+      		return {name: name, population: +d[name]};
+   	 	})});
+	
+		var dataset1 = data.slice(1,2), 
+			dataset2 = data.slice(3,8);
+				
+		var chart = donut()
+              .$el(d3.select("#chart"))
+              .data(dataset1)
+              .render();
+		donut().$el(d3.select("#chart"))
+              .data(data)
+              .render();
+		//chart.data(dataset2).render();
+  	});
+</script>

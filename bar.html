@@ -29,16 +29,16 @@
     			.orient("bottom").ticks(12)
     			.tickFormat(d3.time.format("%B")); // tickFormat
 
-			var yAxisLeft = d3.svg.axis().scale(y0)
-    			.orient("left").ticks(5);
+			var yAxisRight = d3.svg.axis().scale(y0)
+    			.orient("right").ticks(5);
 				
-			var yAxisRight = d3.svg.axis().scale(y1)
-    			.orient("right").ticks(5).tickFormat(d3.format(".0%"));
+			var yAxisLeft = d3.svg.axis().scale(y1)
+    			.orient("left").ticks(5).tickFormat(d3.format(".0%"));
 
 			// Define the line
 			var valueline0 = d3.svg.line()
     			.x(function(d) { return x(parseDate(d.label))+10; })
-    			.y(function(d) { return y0(d.price); });
+    			.y(function(d) { return y1(d.occupancy); });
 				
 			// Adds the svg canvas
 			var svg = d3.select("body")
@@ -56,7 +56,7 @@
 								
 				// Scale the range of the data
    				x.domain(d3.extent(data, function(d) { return parseDate(d.label); }));
-    			y0.domain([120, 200]);
+    			y0.domain([100, 200]);
 				y1.domain([0, 1]);
 
     			// Add the X Axis
@@ -83,7 +83,7 @@
 					.attr("x",0 - (height / 2))
 					.attr("dy", "1em")
 					.style("text-anchor", "middle")
-					.text("Price");
+					.text("Occupancy");
 					
 				// Add the Right Y Axis
 				width = width +20;
@@ -102,7 +102,7 @@
 					.style("text-anchor", "middle")
 					.style("font-weight", "bold")
 					.style("fill","steelblue")
-					.text("Occupancy");
+					.text("Price");
 				
 	
 				width = width - 20;	
@@ -114,8 +114,8 @@
       				.attr("class", "bar")
       				.attr("x", function(d) { return x(parseDate(d.label)); })
       				.attr("width", function(d) { return 20; })
-      				.attr("y", function(d) { return y1(d.occupancy); })
-      				.attr("height", function(d) { return height - y1(d.occupancy); });
+      				.attr("y", function(d) { return y0(d.price); })
+      				.attr("height", function(d) { return height - y0(d.price); });
 			
 				svg.append("g")
 					.attr("class", "x axis")	
@@ -137,7 +137,7 @@
 						;})
 					.attr("r", function(d){return 5})
 					.attr("cx", function(d) { return x(parseDate(d.label))+10; })
-					.attr("cy", function(d) { return y0(d.price); });
+					.attr("cy", function(d) { return y1(d.occupancy); });
 					
 				svg.append("circle")
 				.style("fill","#F39D41")
