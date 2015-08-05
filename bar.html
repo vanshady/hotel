@@ -4,6 +4,7 @@
 		<meta charset="utf-8">
 		<title>Bar Chart</title>
 		<!-- Stylesheets -->
+		<!--link rel="stylesheet" type="text/css" href="/css/tooltip.css"-->
 		<link rel="stylesheet" type="text/css" href="/css/bar.css">
 		<!-- Libraries -->
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
@@ -12,9 +13,9 @@
 		<script type="text/javascript">
 
 			// Set the dimensions of the canvas / graph
-			var margin = {top: 30, right: 30, bottom: 100, left: 80},
+			var margin = {top: 60, right: 30, bottom: 110, left: 80},
     			width = 500 - margin.left - margin.right,
-    			height = 300 - margin.top - margin.bottom;
+    			height = 340 - margin.top - margin.bottom;
 			
 			// Parse the date / time
 			var parseDate = d3.time.format("%B").parse;
@@ -135,21 +136,77 @@
 						if (d.conventions == 1) {return "#F39D41"} 
 						else { return "black" } 
 						;})
+					.attr("id",function(d,i){return "circle"+i;})
 					.attr("r", function(d){return 5})
 					.attr("cx", function(d) { return x(parseDate(d.label))+10; })
 					.attr("cy", function(d) { return y1(d.occupancy); });
-					
+				
+				// Add the legend	
 				svg.append("circle")
 				.style("fill","#F39D41")
 				.attr("r", 5)
-				.attr("cx", width/2 - 60)
+				.attr("cx", width/2 - 50)
 				.attr("cy", height+80);
 				
 				svg.append("text")
-					.attr("transform", "translate(" + (width/2 - 45) + " ," +(height+85) +")")
+					.attr("transform", "translate(" + (width/2 - 40) + " ," +(height+85) +")")
 					.style("text-anchor", "start")
 					.text(" : Has Convention");
-					
+				
+				svg.append("text")
+					.attr("transform", "translate(" + (width-60) + " ," +(height+105) +")")
+					.style("text-anchor", "start")
+					.text("Mouse over for more details")
+					.style("font-weight","bold")
+					.style("font-size",10)
+					.style("fill-opacity",0.6);
+				// Add the mouse-hover	
+				svg.selectAll("rect")
+					.on("mouseover", function(d, i){
+						var xPos = parseFloat(d3.select(this).attr("x")-15);
+						var yPos = parseFloat(d3.select(this).attr("y"));
+						var height = parseFloat(d3.select(this).attr("height"));
+						
+						svg.selectAll("rect").style().style("fill-opacity","100%");
+						svg.selectAll("circle").style().style("fill-opacity","100%");
+						
+						d3.select(this).transition().duration(100).style("fill-opacity","80%");							
+						svg.select("#circle"+i).transition().duration(100).style("fill-opacity","80%");	
+						svg.append("text")
+							.attr("x",xPos)
+							.attr("y",yPos +height/2)
+							.attr("class","tooltip")
+							.html("Price "+d.price )
+							//.transition().duration(100)
+							.style("fill","orange")
+							.style("fill-opacity","100%")
+							.style("font-size","14px");	
+						
+						svg.append("text")
+							.attr("x", xPos-20)
+							.attr("y", -10)
+							.attr("class","tooltip")
+							.html("Occupancy: "+d.occupancy )
+							//.transition().duration(100)
+							.style("font-weight","bold")
+							.style("fill-opacity","100%")
+							.style("font-size","14px");	
+						
+						svg.append("text")
+							.attr("x", xPos-20)
+							.attr("y", -30)
+							.attr("class","tooltip")
+							.html("LoS: "+d.LoS )
+							//.transition().duration(100)
+							.style("font-weight","bold")
+							.style("fill-opacity","100%")
+							.style("font-size","14px");		
+					})
+					.on("mouseout",function(d, i){
+						svg.selectAll(".tooltip").remove();
+						d3.select(this).style("fill-opacity","100%");	
+						svg.select("#circle"+i).style("fill-opacity","100%");										
+					})
 			});//end of csv function
 	
 			function type(d) {
