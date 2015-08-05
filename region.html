@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="/css/title.css">
 <style>
 
 body {
@@ -19,7 +20,7 @@ body {
   text-anchor: end;
 }
 
-.title {
+.subtitle {
 	font-family: sans-serif;
   font-size: 14px;
   font-weight: 100;
@@ -30,9 +31,9 @@ body {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
 <script>
 
-var margin = {top: 20, right: 100, bottom: 150, left: 40},
+var margin = {top:50, right: 100, bottom: 150, left: 40},
     width = 650 - margin.left - margin.right,
-    height = 300 - margin.top - margin.bottom;
+    height = 400 - margin.top - margin.bottom;
 
 var parseDate = d3.time.format("%B").parse,
     formatPercent = d3.format(".0%");
@@ -71,6 +72,12 @@ var svg = d3.select("body").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+// Add a title:
+  d3.select("svg").append('text')
+        .attr("transform","translate("+width/2+",30)")
+				.attr('class','title')
+				.text('Region');
+        
 d3.csv("/csv/region.csv", function(error, data) {
   if (error) throw error;
 
@@ -131,7 +138,7 @@ d3.csv("/csv/region.csv", function(error, data) {
 		.attr('cy', (height + 130));
     
   region.append("text")
-    .attr("class","title")
+    .attr("class","subtitle")
     .text('Local: 57.75%')
     .style("text-anchor", "middle")
     .attr("x",(width / 2))
@@ -144,7 +151,7 @@ d3.csv("/csv/region.csv", function(error, data) {
 		.attr('cy', (height + 110));
      
    region.append("text")
-    .attr("class","title")
+    .attr("class","subtitle")
     .text('USA: 10.25%')
     .style("text-anchor", "middle")
     .attr("x",(width / 2))
@@ -157,7 +164,7 @@ d3.csv("/csv/region.csv", function(error, data) {
 		.attr('cy', (height + 90));
     
   region.append("text")
-    .attr("class","title")
+    .attr("class","subtitle")
     .text('South America: 3.17%')
     .style("text-anchor", "middle")
     .attr("x",(width / 2))
@@ -170,7 +177,7 @@ d3.csv("/csv/region.csv", function(error, data) {
 		.attr('cy', (height + 70));
     
   region.append("text") 
-      .attr("class","title")
+      .attr("class","subtitle")
       .attr("x", (width / 2) )
       .attr("y", (height + 75) )
       .style("text-anchor", "middle")
@@ -183,7 +190,7 @@ d3.csv("/csv/region.csv", function(error, data) {
 		.attr('cy', (height + 50));
   
   region.append("text") 
-      .attr("class","title")
+      .attr("class","subtitle")
       .attr("x", (width / 2) )
       .attr("y", (height + 55) )
       .style("text-anchor", "middle")
@@ -196,7 +203,7 @@ d3.csv("/csv/region.csv", function(error, data) {
 		.attr('cy', (height + 30));
   
   region.append("text") 
-      .attr("class","title")
+      .attr("class","subtitle")
       .attr("x", (width / 2) )
       .attr("y", (height+ 35) )
       .style("text-anchor", "middle")

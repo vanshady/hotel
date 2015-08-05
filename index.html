@@ -9,9 +9,13 @@
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
 		<script type="text/javascript">			
 			function setURL(loc) {
-    			document.getElementById('iidd').src = loc;
+    			//document.getElementById('id2').src = loc;
+				document.getElementById('iidd').innerHTML = '';
+				var ifr = document.createElement('iframe');
+					ifr.id="id2"; ifr.src=loc; ifr.frameBorder=0; ifr.marginwidth=0; ifr.marginheight=0 ;
+					ifr.scrolling="no"; ifr.style="width:700px;height:600px;"; ifr.width=700;  ifr.height=500; ifr.ALLOWTRANSPARENCY="true";
+					document.getElementById('iidd').appendChild(ifr);
   			}
-		
 		</script>
 	</head>
 	<body>		
@@ -21,34 +25,46 @@
 				.attr('class', 'title')
 				.html('Diagram <span class="small">of the</span> Data Analysis <span class="small">of</span> Hotel Customers');
 		</script>
-		<div>
 		<div  class="div1" id="id1" style="display: inline-block">
 			<iframe src="bar.html" frameBorder=0 marginwidth=0 marginheight=0 
-			scrolling=no style="width:800px;height:400px;" width=800  height=400 ALLOWTRANSPARENCY="true">
+				scrolling=no style="width:550px;height:400px;" width=550  height=400 ALLOWTRANSPARENCY="true">
 			</iframe>
 		</div>
-		<div  class="div2" id="iidd" style="display: inline-block">
-			<iframe id="id2" src="donut_g.html" frameBorder=0 marginwidth=0 marginheight=0 
-			scrolling=no style="width:230px;height:230px;" width=230  height=230 ALLOWTRANSPARENCY="true">
-			</iframe>
-			<iframe id="id3" src="donut_rg.html" frameBorder=0 marginwidth=0 marginheight=0 
-			scrolling=no style="width:230px;height:230px;" width=230  height=230 ALLOWTRANSPARENCY="true">
-			</iframe>
-			<iframe id="id4" src="donut_a.html" frameBorder=0 marginwidth=0 marginheight=0 
-			scrolling=no style="width:230px;height:230px;" width=230  height=230 ALLOWTRANSPARENCY="true">
-			</iframe>
-			<iframe id="id5" src="donut_t.html" frameBorder=0 marginwidth=0 marginheight=0 
-			scrolling=no style="width:230px;height:230px;" width=230  height=230 ALLOWTRANSPARENCY="true">
-			</iframe>
-			<iframe id="id6" src="donut_rs.html" frameBorder=0 marginwidth=0 marginheight=0 
-			scrolling=no style="width:230px;height:230px;" width=230  height=230 ALLOWTRANSPARENCY="true">
-			</iframe>
+		<div class="div2" style="display: inline">
+			<div   id="iidd" >
+				<iframe id="id2" src="donut_g.html" frameBorder=0 marginwidth=0 marginheight=0 
+					scrolling=no style="width:300px;height:160px;" width=300  height=160 ALLOWTRANSPARENCY="true">
+				</iframe>
+				<iframe id="id3" src="donut_rg.html" frameBorder=0 marginwidth=0 marginheight=0 
+					scrolling=no style="width:300px;height:160px;" width=300  height=160 ALLOWTRANSPARENCY="true">
+				</iframe>
+				<iframe id="id4" src="donut_rs.html" frameBorder=0 marginwidth=0 marginheight=0 
+					scrolling=no style="width:300px;height:160px;" width=300  height=160 ALLOWTRANSPARENCY="true">
+				</iframe>
+				<iframe id="id5" src="donut_t.html" frameBorder=0 marginwidth=0 marginheight=0 
+					scrolling=no style="width:350px;height:160px;" width=350  height=160 ALLOWTRANSPARENCY="true">
+				</iframe>
+				<iframe id="id6" src="donut_a.html" frameBorder=0 marginwidth=0 marginheight=0 
+					scrolling=no style="width:500px;height:160px;" width=500  height=160 ALLOWTRANSPARENCY="true">
+				</iframe>
+			</div>
+			<div class="div3" id="buttons">
+				<script type="text/javascript">
+					d3.select("#buttons").insert('text')
+						.style("text-anchor", "start")
+						.text("Click for more")
+						.style("font-weight","bold")
+						.style("font-size",10)
+						.style("fill-opacity",0.6);	
+				</script>
+				<input class="b_r" type="button" onclick="setURL('age.html')" value='age'/>
+				<input class="b_r" type="button" onclick="setURL('region.html')" value='region'/>
+				<input class="b_r" type="button" onclick="setURL('gender.html')" value='gender'/>
+				<input class="b_r" type="button" onclick="setURL('reservation.html')" value='reservation'/>
+				<input class="b_r" type="button" onclick="setURL('tourist.html')" value='tourist'/>
+				<input type='button' value='back' onclick="location=location"/> 
+			</div>
 		</div>
-		</div>
-			<input class="b_r" type="button" onclick="setURL('age.html')" value='age'/>
-			<input class="b_r" type="button" onclick="setURL('region.html')" value='region'/>
-			<input class="b_r" type="button" onclick="setURL('gender.html')" value='gender'/>
-			<input class="b_r" type="button" onclick="setURL('reservation.html')" value='reservation'/>
-			<input class="b_r" type="button" onclick="setURL('tourist.html')" value='tourist'/>
+				
 	</body>
 </html>

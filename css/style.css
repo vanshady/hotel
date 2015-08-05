@@ -5,8 +5,9 @@ body {
 	color: #474747;
 }
 
-.div1{width:50%;float:left;position:relative;}
-.div2{width:50%;float:right;position:relative;}
+.div1{width:45%;float:left;position:relative;}
+.div2{width:55%;float:right;position:relative;}
+.div3{width:70%;float:right;position:relative;}
 
 .title, .subtitle, .caption, .label, .legend, figure {
 	font-family: baskerville, serif;

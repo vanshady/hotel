@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="/css/title.css">
 <style>
 
 body {
@@ -31,7 +32,7 @@ body {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 <script>
 
-var margin = {top: 20, right: 100, bottom: 100, left: 60},
+var margin = {top: 50, right: 100, bottom: 100, left: 60},
     width = 600 - margin.left - margin.right,
     height = 300 - margin.top - margin.bottom;
 
@@ -61,6 +62,12 @@ var svg = d3.select("body").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+// Add a title:
+  d3.select("svg").append('text')
+        .attr("transform","translate("+width/2+",30)")
+				.attr('class','title')
+				.text('Tourist');
+        
 d3.csv("/csv/tourist.csv", function(error, data) {
   if (error) throw error;
 
@@ -119,7 +126,7 @@ d3.csv("/csv/tourist.csv", function(error, data) {
 		.attr('cy', (height + 70));
      
   svg.append("text")
-    .attr("class","title")
+    
     .text('Businessmen: 82.17%')
     .style("text-anchor", "middle")
     .attr("x",(width / 2))
@@ -132,7 +139,7 @@ d3.csv("/csv/tourist.csv", function(error, data) {
 		.attr('cy', (height + 50));
     
   svg.append("text")
-    .attr("class","title")
+    
     .text('Tourists: 17.83%')
     .style("text-anchor", "middle")
     .attr("x",(width / 2))

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="/css/title.css">
 <style>
 
 body {
@@ -31,7 +32,7 @@ body {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 <script>
 
-var margin = {top: 20, right: 100, bottom: 100, left: 60},
+var margin = {top: 50, right: 100, bottom: 100, left: 60},
     width = 600 - margin.left - margin.right,
     height = 300 - margin.top - margin.bottom;
 
@@ -61,6 +62,12 @@ var svg = d3.select("body").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+// Add a title:
+  d3.select("svg").append('text')
+        .attr("transform","translate("+(width/2-20)+",30)")
+				.attr('class','title')
+				.text('Reservation');
+        
 d3.csv("/csv/reservation.csv", function(error, data) {
   if (error) throw error;
 
@@ -115,25 +122,35 @@ d3.csv("/csv/reservation.csv", function(error, data) {
   svg.append('circle')
     .style('fill', '#1f77b4')
 		.attr('r', 5)
-		.attr('cx', (width / 2 -90 ))
-		.attr('cy', (height + 70));
+		.attr('cx', (width / 2 -110))
+		.attr('cy', (height + 90));
      
   svg.append("text")
-    .attr("class","title")
-    .text('Businessmen: 82.17%')
+    .text('Direct Reservation: 70.83%')
     .style("text-anchor", "middle")
     .attr("x",(width / 2))
-    .attr("y",(height + 75));
+    .attr("y",(height + 95));
   
   svg.append('circle')
-    .style('fill', '#ff7f0e')
+    .style('fill', '#ffbb7')
 		.attr('r', 5)
-		.attr('cx', (width / 2-90))
+		.attr('cx', (width / 2-110))
+		.attr('cy', (height + 70));
+    
+  svg.append("text")
+    .text('Agency: 21.25%')
+    .style("text-anchor", "middle")
+    .attr("x",(width / 2))
+    .attr("y",(height +75));
+    
+  svg.append('circle')
+    .style('fill', '#aec7e8')
+		.attr('r', 5)
+		.attr('cx', (width / 2-110))
 		.attr('cy', (height + 50));
     
   svg.append("text")
-    .attr("class","title")
-    .text('reservations: 17.83%')
+    .text('Air Crew: 7.92%')
     .style("text-anchor", "middle")
     .attr("x",(width / 2))
     .attr("y",(height +55));

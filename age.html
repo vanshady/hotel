@@ -1,19 +1,17 @@
 <!DOCTYPE html>
+<head>
 <meta charset="utf-8">
-<link rel="stylesheet" type="text/css" href="/css/style.css">
+<link rel="stylesheet" type="text/css" href="/css/title.css">
 <style>
-
 body {
-  font-family:  sans-serif;
-	font-size: 10px;
-	color: #474747;
+  font: 14px Arial,sans-serif;
 }
 
 .axis path,
 .axis line {
   fill: none;
   stroke: #000;
-  shape-rendering: optimizeSpeed;
+  shape-rendering: crispEdges;
 }
 
 .age text {
@@ -21,15 +19,14 @@ body {
 }
 
 </style>
+</head>
 <body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
 <script>
-// Add a title:
-		d3.select("body").append('h2')
-				.attr('class', 'title')
-				.html('Age');
-var margin = {top: 20, right: 100, bottom: 100, left: 40},
-    width = 650 - margin.left - margin.right,
+
+        
+var margin = {top: 50, right: 20, bottom: 100, left: 40},
+    width = 600 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
 
 var parseDate = d3.time.format("%B").parse,
@@ -71,6 +68,12 @@ var svg = d3.select("body").append("svg")
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    
+  // Add a title:
+  d3.select("svg").append('text')
+        .attr("transform","translate("+width/2+",30)")
+				.attr('class','title')
+				.text('Age');
 
 d3.csv("/csv/age.csv", function(error, data) {
   if (error) throw error;
@@ -130,7 +133,7 @@ d3.csv("/csv/age.csv", function(error, data) {
 		.attr('cy', (height + 90));
      
    age.append("text")
-    .attr("class","title")
+    
     .text('Under 20: 2.42%')
     .style("text-anchor", "middle")
     .attr("x",(width / 2))
@@ -143,7 +146,7 @@ d3.csv("/csv/age.csv", function(error, data) {
 		.attr('cy', (height + 70));
     
   age.append("text")
-    .attr("class","title")
+    
     .text('From 20 to 35: 28.08%')
     .style("text-anchor", "middle")
     .attr("x",(width / 2))
@@ -156,7 +159,7 @@ d3.csv("/csv/age.csv", function(error, data) {
 		.attr('cy', (height+50));
     
   age.append("text") 
-      .attr("class","title")
+      
       .attr("x", (width / 2) )
       .attr("y", (height + 55) )
       .style("text-anchor", "middle")
@@ -169,7 +172,7 @@ d3.csv("/csv/age.csv", function(error, data) {
 		.attr('cy', (height + 30));
   
   age.append("text") 
-      .attr("class","title")
+      
       .attr("x", (width / 2) )
       .attr("y", (height+ 35) )
       .style("text-anchor", "middle")

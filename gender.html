@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" type="text/css" href="tooltip.css">
+<link rel="stylesheet" type="text/css" href="/css/title.css">
 <style>
 
 body {
@@ -34,9 +34,9 @@ body {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 <script>
 
-var margin = {top: 20, right: 100, bottom: 100, left: 60},
+var margin = {top: 50, right: 100, bottom: 100, left: 60},
     width = 600 - margin.left - margin.right,
-    height = 300 - margin.top - margin.bottom;
+    height = 350 - margin.top - margin.bottom;
 
 var x = d3.scale.ordinal()
     .rangeRoundBands([0, width], .1);
@@ -45,7 +45,7 @@ var y = d3.scale.linear()
     .range([height, 0]);
     
 var color = d3.scale.ordinal()
-    .range(["LightskyBlue", "crimson"]);
+    .range(["#1f77b4", "lightpink"]);
 
 var xAxis = d3.svg.axis()
     .scale(x)
@@ -64,6 +64,12 @@ var svg = d3.select("body").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+// Add a title:
+  d3.select("svg").append('text')
+        .attr("transform","translate("+width/2+",30)")
+				.attr('class','title')
+				.text('Gender');
+        
 d3.csv("/csv/gender.csv", function(error, data) {
   if (error) throw error;
 
@@ -122,7 +128,7 @@ d3.csv("/csv/gender.csv", function(error, data) {
 		.attr('cy', (height + 70));
      
   svg.append("text")
-    .attr("class","title")
+    
     .text('male: 75.33%')
     .style("text-anchor", "middle")
     .attr("x",(width / 2))
@@ -135,7 +141,7 @@ d3.csv("/csv/gender.csv", function(error, data) {
 		.attr('cy', (height + 50));
     
   svg.append("text")
-    .attr("class","title")
+    
     .text('female: 24.67%')
     .style("text-anchor", "middle")
     .attr("x",(width / 2))
