@@ -24,10 +24,10 @@ var width = 200,
     radius = Math.min(width, height) / 2;
 
 var color = d3.scale.ordinal()
-    .range(["Crimson", "Lightskyblue"]);
+    .range(["Crimson", "Lightskyblue","#e377c2","#31a354","Orange","Purple"]);
 
 var arc = d3.svg.arc()
-    .outerRadius(radius - 40)
+    .outerRadius(radius -30)
     .innerRadius(radius);
 
 var pie = d3.layout.pie()
@@ -41,7 +41,7 @@ var svg = d3.select("body").append("svg")
     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
 
-d3.csv("/csv/genderavg.csv", function(error, data) {
+d3.csv("/csv/regionavg.csv", function(error, data) {
 
   data.forEach(function(d) {
     d.population = +d.population;
@@ -54,13 +54,13 @@ d3.csv("/csv/genderavg.csv", function(error, data) {
 
   g.append("path")
       .attr("d", arc)
-      .style("fill", function(d) { return color(d.data.age); });
+      .style("fill", function(d) { return color(d.data.region); });
 
   g.append("text")
       .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
-      .html(function(d) { return d.data.age; })
+      .html(function(d) { return d.data.region; })
       .style("fill","white")
       .style("font-wight","bold")
       .style("font-size","14");

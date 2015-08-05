@@ -26,7 +26,7 @@ var width = 200,
 var color = d3.scale.ordinal().range(["Crimson", "Lightskyblue","#31a354","#e377c2"]);
 
 var arc = d3.svg.arc()
-    .outerRadius(radius - 40)
+    .outerRadius(radius - 30)
     .innerRadius(radius);
 
 var pie = d3.layout.pie()
@@ -45,12 +45,7 @@ d3.csv("/csv/ageavg.csv", function(error, data) {
   data.forEach(function(d) {
     d.population = +d.population;
   }); 
-    
-  var path = svg.data(data)
-    .enter().append("path")
-    .attr("d", arc.startAngle(0).endAngle(function(d) { return d.age * 2 * Math.PI / 4; }))
-    .attr("id", "arcpath");
-    
+   
   var g = svg.selectAll(".arc")
       .data(pie(data))
     .enter().append("g")
@@ -60,9 +55,8 @@ d3.csv("/csv/ageavg.csv", function(error, data) {
       .attr("d", arc)
       .style("fill", function(d) { return color(d.data.age); });
 
-  g.append("textPath")
-    //.attr("stroke","black")
-    .attr("xlink:href","#arcpath").append("text")
+
+  g.append("text")
       .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
