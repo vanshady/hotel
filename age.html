@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<head>
 <meta charset="utf-8">
 <link rel="stylesheet" type="text/css" href="/css/title.css">
 <style>
+
 body {
-  font: 14px Arial,sans-serif;
+  font: 16px sans-serif;
 }
 
 .axis path,
@@ -14,102 +14,73 @@ body {
   shape-rendering: crispEdges;
 }
 
-.age text {
-  text-anchor: end;
+.bar {
+  fill: steelblue;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.legend line {
+  stroke: #000;
+  shape-rendering: crispEdges;
 }
 
 </style>
-</head>
 <body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 <script>
 
-        
-var margin = {top: 50, right: 20, bottom: 100, left: 40},
+var margin = {top: 50, right: 100, bottom: 100, left: 60},
     width = 600 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+    height = 300 - margin.top - margin.bottom;
 
-var parseDate = d3.time.format("%B").parse,
-    formatPercent = d3.format(".0%");
-    
-var labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-var colors0 = ['#1f77b4','#aec7e8','#ffbb78','#ff7f0e'];
-
-var colors = ['#3182bd','#9ecae1',' #9467bd','#FF0000'];
-var agelabels = ['Under 20', 'From 20 to 35', 'From 35 to 55', 'More than 55']
-var x = d3.time.scale().range([0,width]);
+var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1);
 
 var y = d3.scale.linear()
     .range([height, 0]);
-
-var color = d3.scale.category20();
-
+    
+var color = d3.scale.ordinal()
+    .range(["#F44336", "#FFC107","#448AFF","#8BC34A","#18FFFF","#8BC34A"]);
+var colors = ["#F44336", "#FFC107","#448AFF","#8BC34A","#18FFFF","#8BC34A"];
 var xAxis = d3.svg.axis()
     .scale(x)
     .orient("bottom")
-    .ticks(12)
-    .tickFormat(d3.time.format("%b"));
+    //.ticks(12)
+    //.tickFormat(d3.time.format("%b"));
 
 var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left")
-    .tickFormat(formatPercent);
-
-var area = d3.svg.area()
-    .x(function(d) { return x(d.date); })
-    .y0(function(d) { return y(d.y0); })
-    .y1(function(d) { return y(d.y0 + d.y); });
-
-var stack = d3.layout.stack()
-    .values(function(d) { return d.values; });
+    .tickFormat(d3.format(".0%"));
 
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    
-  // Add a title:
+
+// Add a title:
   d3.select("svg").append('text')
-        .attr("transform","translate("+width/2+",30)")
+        .attr("transform","translate("+(width/2-20)+",30)")
 				.attr('class','title')
 				.text('Age');
-
+        
 d3.csv("/csv/age.csv", function(error, data) {
   if (error) throw error;
 
   color.domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; }));
-  
-  data.forEach(function(d, i) {
-    d.date = parseDate(d.date);
-    d.u20 = +d.u20;
-    d.f20to35 = +d.f20to35;
-    d.f35to55 = +d.f35to55;
-    d.m55 = +d.m55;
+
+  data.forEach(function(d) {
+    var y0 = 0;
+    d.ages = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
+    d.ages.forEach(function(d) { d.y0 /= y0; d.y1 /= y0; });
   });
+
+  x.domain(data.map(function(d) { return d.date; }));
   
-  var ages = stack(color.domain().map(function(name) {
-    return {
-      name: name,
-      values: data.map(function(d) {
-        return {date: d.date, y: d[name] / 100};
-      })
-    };
-  }));
-
-  x.domain(d3.extent(data, function(d) { return d.date; }));
-
-  var age = svg.selectAll(".age")
-      .data(ages)
-    .enter().append("g")
-      .attr("class", "age");
-  
-  age.append("path")
-      .attr("class", "area")
-      .attr("d", function(d) { return area(d.values); })
-      .style("fill", function(d, i) { return colors[3-i]; })
-      .style("fill-opacity", .9);
-
   svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
@@ -118,67 +89,83 @@ d3.csv("/csv/age.csv", function(error, data) {
   svg.append("g")
       .attr("class", "y axis")
       .call(yAxis);
-  
-  age.append("text")
-      .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
-      .attr("transform", function(d) { return "translate(" + x(d.value.date) + "," + y(d.value.y0 + d.value.y / 2) + ")"; })
-      .attr("x", -6)
+
+  var age = svg.selectAll(".age")
+      .data(data)
+    .enter().append("g")
+      .attr("class", "age")
+      .attr("transform", function(d) { return "translate(" + x(d.date) + ",0)"; });
+
+  age.selectAll("rect")
+      .data(function(d) { return d.ages; })
+    .enter().append("rect")
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.y1); })
+      .attr("height", function(d) { return y(d.y0) - y(d.y1); })
+      .style("fill", function(d) { return color(d.name); })
+      .style("fill-opacity",.9);
+
+  var legend = svg.select(".age:last-child").selectAll(".legend")
+      .data(function(d) { return d.ages; })
+    .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d) { return "translate(" + (x.rangeBand()/2+10) + "," + (y((d.y0 + d.y1) / 2)) + ")"; });
+
+  legend.append("line")
+      .attr("x2", 10);
+
+  legend.append("text")
+      .attr("x", 13)
       .attr("dy", ".35em")
-      .text(function(d, i) { return agelabels[i]; });
+      .text(function(d) { return d.name; });
    
-   age.append('circle')
-    .style('fill', colors[3])
-		.attr('r', 5)
-		.attr('cx', (width / 2 - 90))
-		.attr('cy', (height + 90));
-     
-   age.append("text")
-    
-    .text('Under 20: 2.42%')
-    .style("text-anchor", "middle")
-    .attr("x",(width / 2))
-    .attr("y",(height + 95));
-  
-  age.append('circle')
-    .style('fill', colors[2])
-		.attr('r', 5)
-		.attr('cx', (width / 2 - 90))
-		.attr('cy', (height + 70));
-    
-  age.append("text")
-    
-    .text('From 20 to 35: 28.08%')
-    .style("text-anchor", "middle")
-    .attr("x",(width / 2))
-    .attr("y",(height +75));
-  
-  age.append('circle')
-    .style('fill', colors[1])
-		.attr('r', 5)
-		.attr('cx', (width / 2 - 90))
-		.attr('cy', (height+50));
-    
-  age.append("text") 
-      
-      .attr("x", (width / 2) )
-      .attr("y", (height + 55) )
-      .style("text-anchor", "middle")
-      .text('From 35 to 55: 49.92%');
-  
-  age.append('circle')
+   svg.append('circle')
     .style('fill', colors[0])
 		.attr('r', 5)
 		.attr('cx', (width / 2 - 90))
-		.attr('cy', (height + 30));
+		.attr('cy', (height + 95));
+     
+   svg.append("text")
+    .text('Under 20: 2.42%')
+    .style("text-anchor", "middle")
+    .attr("x",(width / 2))
+    .attr("y",(height + 100));
   
-  age.append("text") 
-      
+  svg.append('circle')
+    .style('fill', colors[1])
+		.attr('r', 5)
+		.attr('cx', (width / 2 - 90))
+		.attr('cy', (height + 75));
+    
+  svg.append("text")
+    .text('From 20 to 35: 28.08%')
+    .style("text-anchor", "middle")
+    .attr("x",(width / 2))
+    .attr("y",(height +80));
+  
+  svg.append('circle')
+    .style('fill', colors[2])
+		.attr('r', 5)
+		.attr('cx', (width / 2 - 90))
+		.attr('cy', (height+55));
+    
+  svg.append("text") 
       .attr("x", (width / 2) )
-      .attr("y", (height+ 35) )
+      .attr("y", (height + 60) )
+      .style("text-anchor", "middle")
+      .text('From 35 to 55: 49.92%');
+  
+  svg.append('circle')
+    .style('fill', colors[3])
+		.attr('r', 5)
+		.attr('cx', (width / 2 - 90))
+		.attr('cy', (height + 35));
+  
+  svg.append("text") 
+      .attr("x", (width / 2) )
+      .attr("y", (height+ 40) )
       .style("text-anchor", "middle")
       .text('More than 55: 19.58%');
-
 });
 
 </script>
-</body>

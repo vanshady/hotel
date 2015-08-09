@@ -4,67 +4,57 @@
 <style>
 
 body {
-  font-family:  sans-serif;
-	font-size: 10px;
-	color: #474747;
+  font: 16px sans-serif;
 }
 
 .axis path,
 .axis line {
   fill: none;
   stroke: #000;
-  shape-rendering: optimizeSpeed;
+  shape-rendering: crispEdges;
 }
 
-.region text {
-  text-anchor: end;
+.bar {
+  fill: steelblue;
 }
 
-.subtitle {
-	font-family: sans-serif;
-  font-size: 14px;
-  font-weight: 100;
+.x.axis path {
+  display: none;
+}
+
+.legend line {
+  stroke: #000;
+  shape-rendering: crispEdges;
 }
 
 </style>
 <body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 <script>
 
-var margin = {top:50, right: 100, bottom: 150, left: 40},
-    width = 650 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+var margin = {top: 50, right: 100, bottom: 140, left: 60},
+    width = 600 - margin.left - margin.right,
+    height = 340 - margin.top - margin.bottom;
 
-var parseDate = d3.time.format("%B").parse,
-    formatPercent = d3.format(".0%");
-
-var labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-var regionlabels = ['Local', 'U.S.A.', 'South America', 'Europe', 'Middle East Africa', 'Asia']
-var x = d3.time.scale().range([0,width]);
+var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1);
 
 var y = d3.scale.linear()
     .range([height, 0]);
-
-var color = d3.scale.category20();
-
+    
+var color = d3.scale.ordinal()
+    .range(["#448AFF", "#F44336","#FFC107","#E040FB","#CDDC39","#8BC34A"]);
+var colors = ["#448AFF", "#F44336","#FFC107","#E040FB","#CDDC39","#8BC34A"];
 var xAxis = d3.svg.axis()
     .scale(x)
     .orient("bottom")
-    .ticks(12)
-    .tickFormat(d3.time.format("%b"));
+    //.ticks(12)
+    //.tickFormat(d3.time.format("%b"));
 
 var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left")
-    .tickFormat(formatPercent);
-
-var area = d3.svg.area()
-    .x(function(d) { return x(d.date); })
-    .y0(function(d) { return y(d.y0); })
-    .y1(function(d) { return y(d.y0 + d.y); });
-
-var stack = d3.layout.stack()
-    .values(function(d) { return d.values; });
+    .tickFormat(d3.format(".0%"));
 
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -74,7 +64,7 @@ var svg = d3.select("body").append("svg")
 
 // Add a title:
   d3.select("svg").append('text')
-        .attr("transform","translate("+width/2+",30)")
+        .attr("transform","translate("+(width/2-20)+",30)")
 				.attr('class','title')
 				.text('Region');
         
@@ -83,38 +73,14 @@ d3.csv("/csv/region.csv", function(error, data) {
 
   color.domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; }));
 
-  data.forEach(function(d, i) {
-    d.date = parseDate(d.date);
-    d.local = +d.local;
-    d.US = +d.US;
-    d.SA = +d.SA;
-    d.EU = +d.EU;
-    d.MEA = +d.MEA;
-    d.ASIA = +d.ASIA;
+  data.forEach(function(d) {
+    var y0 = 0;
+    d.regions = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
+    d.regions.forEach(function(d) { d.y0 /= y0; d.y1 /= y0; });
   });
 
-  var regions = stack(color.domain().map(function(name) {
-    return {
-      name: name,
-      values: data.map(function(d) {
-        return {date: d.date, y: d[name] / 100};
-      })
-    };
-  }));
-
-  x.domain(d3.extent(data, function(d) { return d.date; }));
-
-  var region = svg.selectAll(".region")
-      .data(regions)
-    .enter().append("g")
-      .attr("class", "region");
-
-  region.append("path")
-      .attr("class", "area")
-      .attr("d", function(d) { return area(d.values); })
-      .style("fill", function(d) { return color(d.name); })
-      .style("fill-opacity", .7);
-
+  x.domain(data.map(function(d) { return d.date; }));
+  
   svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
@@ -123,86 +89,108 @@ d3.csv("/csv/region.csv", function(error, data) {
   svg.append("g")
       .attr("class", "y axis")
       .call(yAxis);
-    
-  region.append("text")
-      .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
-      .attr("transform", function(d) { return "translate(" + (x(d.value.date)) + "," + y(d.value.y0 + d.value.y / 2) + ")"; })
-      .attr("x", -6)
+
+  var region = svg.selectAll(".region")
+      .data(data)
+    .enter().append("g")
+      .attr("class", "region")
+      .attr("transform", function(d) { return "translate(" + x(d.date) + ",0)"; });
+
+  region.selectAll("rect")
+      .data(function(d) { return d.regions; })
+    .enter().append("rect")
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.y1); })
+      .attr("height", function(d) { return y(d.y0) - y(d.y1); })
+      .style("fill", function(d) { return color(d.name); })
+      .style("fill-opacity",.9);
+
+  var legend = svg.select(".region:last-child").selectAll(".legend")
+      .data(function(d) { return d.regions; })
+    .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d) { return "translate(" + (x.rangeBand()/2+10) + "," + (y((d.y0 + d.y1) / 2)) + ")"; });
+
+  legend.append("line")
+      .attr("x2", 10);
+
+  legend.append("text")
+      .attr("x", 13)
       .attr("dy", ".35em")
-      .text(function(d, i) { return regionlabels[i]; });
-  
-  region.append('circle')
-    .style('fill', '#1f77b4')
+      .text(function(d) { return d.name; });
+   
+   svg.append('circle')
+    .style('fill', colors[5])
 		.attr('r', 5)
 		.attr('cx', (width / 2 - 100))
 		.attr('cy', (height + 130));
     
-  region.append("text")
+  svg.append("text")
     .attr("class","subtitle")
     .text('Local: 57.75%')
     .style("text-anchor", "middle")
     .attr("x",(width / 2))
     .attr("y",(height + 135));
    
-   region.append('circle')
-    .style('fill', '#aec7e8')
+   svg.append('circle')
+    .style('fill', colors[4])
 		.attr('r', 5)
 		.attr('cx', (width / 2 - 100))
 		.attr('cy', (height + 110));
      
-   region.append("text")
+   svg.append("text")
     .attr("class","subtitle")
     .text('USA: 10.25%')
     .style("text-anchor", "middle")
     .attr("x",(width / 2))
     .attr("y",(height + 115));
   
-  region.append('circle')
-    .style('fill', '#ff7f0e')
+  svg.append('circle')
+    .style('fill', colors[3])
 		.attr('r', 5)
 		.attr('cx', (width / 2 - 100))
 		.attr('cy', (height + 90));
     
-  region.append("text")
+  svg.append("text")
     .attr("class","subtitle")
     .text('South America: 3.17%')
     .style("text-anchor", "middle")
     .attr("x",(width / 2))
     .attr("y",(height + 95));
   
-  region.append('circle')
-    .style('fill', '#ffbb78')
+  svg.append('circle')
+    .style('fill', colors[2])
 		.attr('r', 5)
 		.attr('cx', (width / 2 - 100))
 		.attr('cy', (height + 70));
     
-  region.append("text") 
+  svg.append("text") 
       .attr("class","subtitle")
       .attr("x", (width / 2) )
       .attr("y", (height + 75) )
       .style("text-anchor", "middle")
       .text('Europe: 20.67%');
       
-  region.append('circle')
-    .style('fill', '#2ca02c')
+  svg.append('circle')
+    .style('fill', colors[1])
 		.attr('r', 5)
 		.attr('cx', (width / 2 - 100))
 		.attr('cy', (height + 50));
   
-  region.append("text") 
+  svg.append("text") 
       .attr("class","subtitle")
       .attr("x", (width / 2) )
       .attr("y", (height + 55) )
       .style("text-anchor", "middle")
       .text('Middle East Africa: 2.75%');
   
-  region.append('circle')
-    .style('fill', '#98df8a')
+  svg.append('circle')
+    .style('fill', colors[0])
 		.attr('r', 5)
 		.attr('cx', (width / 2 - 100))
 		.attr('cy', (height + 30));
   
-  region.append("text") 
+  svg.append("text") 
       .attr("class","subtitle")
       .attr("x", (width / 2) )
       .attr("y", (height+ 35) )
@@ -211,4 +199,3 @@ d3.csv("/csv/region.csv", function(error, data) {
 });
 
 </script>
-</body>
