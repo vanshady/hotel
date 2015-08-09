@@ -76,6 +76,7 @@ d3.csv("/csv/reservation.csv", function(error, data) {
   data.forEach(function(d) {
     var y0 = 0;
     d.reservations = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
+    y0 =10000;
     d.reservations.forEach(function(d) { d.y0 /= y0; d.y1 /= y0; });
   });
 
