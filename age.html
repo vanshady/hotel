@@ -32,9 +32,9 @@ body {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 <script>
 
-var margin = {top: 50, right: 100, bottom: 100, left: 60},
+var margin = {top: 50, right: 100, bottom: 140, left: 60},
     width = 600 - margin.left - margin.right,
-    height = 300 - margin.top - margin.bottom;
+    height = 340 - margin.top - margin.bottom;
 
 var x = d3.scale.ordinal()
     .rangeRoundBands([0, width], .1);
@@ -64,7 +64,7 @@ var svg = d3.select("body").append("svg")
 
 // Add a title:
   d3.select("svg").append('text')
-        .attr("transform","translate("+(width/2-20)+",30)")
+        .attr("transform","translate("+(width/2)+",30)")
 				.attr('class','title')
 				.text('Age');
         
